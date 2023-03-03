@@ -3,22 +3,20 @@ package config
 import (
 	"context"
 	"fmt"
-	entity "lelo-user/entity/config"
+	entity "lelo-user/entity"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v4/pgxpool"
 	log "github.com/sirupsen/logrus"
 )
 
-func InitDb(ctx context.Context, config *entity.Config, credential *entity.Credential) (*pgx.Conn, error) {
+func InitDb(ctx context.Context, config *entity.Config, credential *entity.Credential) (*pgxpool.Pool, error) {
 	urlDatabase := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
 		credential.Database.User,
 		credential.Database.Password,
 		config.Database.Host,
 		config.Database.Port,
 		config.Database.Name)
-	db, err := pgx.Connect(ctx, urlDatabase)
-
-	defer db.Close(ctx)
+	db, err := pgxpool.Connect(ctx, urlDatabase)
 
 	if err != nil {
 		log.Errorf("error open connection: %v", err)

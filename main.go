@@ -7,6 +7,8 @@ import (
 
 	config "lelo-user/config"
 
+	dbModule "lelo-user/config"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
@@ -39,12 +41,17 @@ func main() {
 
 	// initiate context
 	ctx := context.Background()
-	_, err = config.InitDb(ctx, &config.ConfigData, &config.CredentialData)
+
+	// init db
+	db, err := dbModule.InitDb(ctx, &config.ConfigData, &config.CredentialData)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error init db: %#v", err)
 		return
 	}
-	err = module.InitModule(ctx, &config.ConfigData, &config.CredentialData)
+
+	defer db.Close()
+
+	err = module.InitModule(ctx, &config.ConfigData, &config.CredentialData, db)
 	if err != nil {
 		log.Errorf("error init modules: %#v", err)
 		return
@@ -60,6 +67,14 @@ func main() {
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, "pong")
 	})
+
+	aaa, err := module.UserusecaseModule.GetUserByEmail(ctx, "maulanay85@gmail.com")
+	if err != nil {
+		log.Errorf("error, %v", err)
+		return
+	}
+
+	fmt.Printf("%v", aaa)
 
 	err = r.Run(port)
 	if err != nil {

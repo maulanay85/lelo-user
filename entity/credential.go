@@ -1,4 +1,4 @@
-package config
+package entity
 
 type Credential struct {
 	Database DatabaseCredential `yaml:"database"`

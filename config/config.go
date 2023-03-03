@@ -2,13 +2,13 @@ package config
 
 import (
 	"io/ioutil"
-	config "lelo-user/entity/config"
+	entity "lelo-user/entity"
 
 	"gopkg.in/yaml.v2"
 )
 
-var ConfigData config.Config
-var CredentialData config.Credential
+var ConfigData entity.Config
+var CredentialData entity.Credential
 
 func ReadConfiguration() error {
 

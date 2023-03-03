@@ -1,4 +1,4 @@
-package config
+package entity
 
 type Config struct {
 	Port        int16    `yaml:"port"`
