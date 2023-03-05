@@ -68,14 +68,6 @@ func main() {
 		ctx.JSON(200, "pong")
 	})
 
-	aaa, err := module.UserusecaseModule.GetUserByEmail(ctx, "maulanay85@gmail.com")
-	if err != nil {
-		log.Errorf("error, %v", err)
-		return
-	}
-
-	fmt.Printf("%v", aaa)
-
 	err = r.Run(port)
 	if err != nil {
 		log.Errorf("cannot running server : %v", err)

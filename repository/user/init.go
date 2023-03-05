@@ -2,10 +2,9 @@ package user
 
 import (
 	"context"
+	entity "lelo-user/entity"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-
-	entity "lelo-user/entity"
 )
 
 type UserRepositoryModule struct {
@@ -19,7 +18,8 @@ func NewUserRepository(db pgxpool.Pool) *UserRepositoryModule {
 }
 
 type UserRepository interface {
-	GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error)
-	// GetUserByPhone(ctx context.Context, phoneNumber string) (pgx.Row, error)
-	// InsertUser(ctx context.Context, user *entity.UserEntity) (int32, error)
+	CheckEmailExist(ctx context.Context, email string) (int, error)
+	InsertUser(ctx context.Context, user *entity.UserEntity) (int32, error)
+	ChangePassword(ctx context.Context, email string, pass string) error
+	GetPasswordByEmail(ctx context.Context, email string) (string, error)
 }
