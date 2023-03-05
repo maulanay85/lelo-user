@@ -2,20 +2,25 @@ package user
 
 import (
 	"context"
-	entity "lelo-user/entity"
 	userRepository "lelo-user/repository/user"
+	utilAuth "lelo-user/util/auth"
 )
 
 type UserUsecaseModule struct {
-	Repo userRepository.UserRepository
+	Repo     userRepository.UserRepository
+	UtilAuth utilAuth.UtilAuth
 }
 
-func NewUserusecase(repo userRepository.UserRepository) *UserUsecaseModule {
+func NewUserusecase(
+	repo userRepository.UserRepository,
+	utilauth utilAuth.UtilAuth,
+) *UserUsecaseModule {
 	return &UserUsecaseModule{
-		Repo: repo,
+		Repo:     repo,
+		UtilAuth: utilauth,
 	}
 }
 
 type UserUsecase interface {
-	GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error)
+	RegisterUser(ctx context.Context, fullname string, email string, pass string) (int32, error)
 }
