@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	config "lelo-user/config"
@@ -38,6 +37,7 @@ func main() {
 		log.Errorf("error read config file: %#v", err)
 		return
 	}
+	gin.SetMode(gin.ReleaseMode)
 
 	// initiate context
 	ctx := context.Background()
@@ -58,20 +58,20 @@ func main() {
 	}
 
 	// initiate server
-	gin.SetMode(gin.ReleaseMode)
-	r := gin.New()
-	port := fmt.Sprintf(":%d", config.ConfigData.Port)
+	// gin.SetMode(gin.ReleaseMode)
+	// r := gin.New()
+	// port := fmt.Sprintf(":%d", config.ConfigData.Port)
 
-	log.Infof("running at %s", port)
+	// log.Infof("running at %s", port)
 
-	r.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(200, "pong")
-	})
+	// r.GET("/ping", func(ctx *gin.Context) {
+	// 	ctx.JSON(200, "pong")
+	// })
 
-	err = r.Run(port)
-	if err != nil {
-		log.Errorf("cannot running server : %v", err)
-		return
-	}
+	// err = r.Run(port)
+	// if err != nil {
+	// 	log.Errorf("cannot running server : %v", err)
+	// 	return
+	// }
 
 }

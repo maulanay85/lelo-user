@@ -9,3 +9,9 @@ type UserEntity struct {
 	Status      int    `json:"status"`
 	BaseEntity
 }
+
+type RegisterUserEntity struct {
+	Fullname string `json:"fullName" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Pass     string `json:"pass" binding:"required"`
+}
