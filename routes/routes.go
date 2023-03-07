@@ -20,6 +20,7 @@ func NewRoutes(router *gin.Engine, port int32) routes {
 	v1 := r.router.Group("/v1")
 
 	r.addPing(v1)
+	r.addAuth(v1)
 
 	return r
 }

@@ -25,10 +25,10 @@ func (u *UserRepositoryModule) InsertUser(ctx context.Context, user *entity.User
 	var id int32
 	err := u.db.QueryRow(ctx,
 		`INSERT INTO user_management
-			(fullname, email, phoneNumber, pass)
+			(fullname, email, pass)
 		 VALUES
 		 	($1, $2, $3) Returning id
-		`, user.Fullname, user.Email, user.PhoneNumber, user.Pass,
+		`, user.Fullname, user.Email, user.Pass,
 	).Scan(&id)
 	if err != nil {
 		log.Errorf("[repository]: InsertUser err: %v", err)

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	config "lelo-user/config"
+	"lelo-user/routes"
 
 	dbModule "lelo-user/config"
 
@@ -57,21 +58,8 @@ func main() {
 		return
 	}
 
-	// initiate server
-	// gin.SetMode(gin.ReleaseMode)
-	// r := gin.New()
-	// port := fmt.Sprintf(":%d", config.ConfigData.Port)
-
-	// log.Infof("running at %s", port)
-
-	// r.GET("/ping", func(ctx *gin.Context) {
-	// 	ctx.JSON(200, "pong")
-	// })
-
-	// err = r.Run(port)
-	// if err != nil {
-	// 	log.Errorf("cannot running server : %v", err)
-	// 	return
-	// }
+	if err = routes.NewRoutes(gin.New(), int32(config.ConfigData.Port)).Run(); err != nil {
+		log.Errorf("error running server : %#v", err)
+	}
 
 }

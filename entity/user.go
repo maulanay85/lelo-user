@@ -11,7 +11,7 @@ type UserEntity struct {
 }
 
 type RegisterUserEntity struct {
-	Fullname string `json:"fullName" binding:"required"`
+	Fullname string `json:"fullname" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 	Pass     string `json:"pass" binding:"required"`
 }

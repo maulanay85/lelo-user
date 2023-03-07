@@ -42,6 +42,9 @@ func SendErrorResponse(c *gin.Context, err error) {
 	} else if errors.Is(unwrap, ErrorUnauthorized) {
 		res := ResponseEntity{Code: 403, Message: err.Error()}
 		c.JSON(403, res)
+	} else if errors.Is(unwrap, ErrorErrorBadRequest) {
+		res := ResponseEntity{Code: 400, Message: err.Error()}
+		c.JSON(400, res)
 	} else if errors.Is(unwrap, ErrorNotFound) {
 		res := ResponseEntity{Code: 404, Message: err.Error()}
 		c.JSON(404, res)
