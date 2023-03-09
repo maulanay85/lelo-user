@@ -43,3 +43,21 @@ func (u *UserUsecaseModule) RegisterUser(ctx context.Context, fullname string, e
 	}
 	return iduser, nil
 }
+
+func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string) (string, error) {
+	user, err := u.Repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		log.Errorf("[usecase] Login: %v", err)
+		errorWrap := fmt.Errorf("error GetUserByEmail: %w", util.ErrorInternalServer)
+		return "", errorWrap
+	}
+	if user.Id == 0 {
+		errorWrap := fmt.Errorf("wrong email or pass: %w", util.ErrorUnauthorized)
+		return "", errorWrap
+	}
+	if isValid := u.UtilAuth.CheckHashPassword(pass, user.Pass); isValid == false {
+		errorWrap := fmt.Errorf("wrong email or pass :%w", util.ErrorUnauthenticated)
+		return "", errorWrap
+	}
+	return "", nil
+}

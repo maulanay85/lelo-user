@@ -13,7 +13,7 @@ func (u *UserRepositoryModule) CheckEmailExist(ctx context.Context, email string
 	err := u.db.QueryRow(ctx, `
 		SELECT 
 			count(*) as total
-		FROM user_management where email = $1`, email).Scan(&total)
+		FROM t_mst_user where email = $1`, email).Scan(&total)
 	if err != nil {
 		log.Errorf("[repository]: CheckEmailExit err: %v", err)
 		return 0, err
@@ -24,7 +24,7 @@ func (u *UserRepositoryModule) CheckEmailExist(ctx context.Context, email string
 func (u *UserRepositoryModule) InsertUser(ctx context.Context, user *entity.UserEntity) (int32, error) {
 	var id int32
 	err := u.db.QueryRow(ctx,
-		`INSERT INTO user_management
+		`INSERT INTO t_mst_user
 			(fullname, email, pass)
 		 VALUES
 		 	($1, $2, $3) Returning id
@@ -39,7 +39,7 @@ func (u *UserRepositoryModule) InsertUser(ctx context.Context, user *entity.User
 
 func (u *UserRepositoryModule) ChangePassword(ctx context.Context, email string, pass string) error {
 	_, err := u.db.Exec(ctx,
-		`UPDATE user_management
+		`UPDATE t_mst_user
 			SET pass = $1
 		WHERE email = $2
 		`, email, pass)
@@ -54,7 +54,7 @@ func (u *UserRepositoryModule) GetPasswordByEmail(ctx context.Context, email str
 	var pass string
 	err := u.db.QueryRow(ctx, `
 		SELECT pass
-			FROM user_management
+			FROM t_mst_user
 		WHERE email = $1
 	`, email).Scan(&pass)
 	if err != nil {
@@ -62,4 +62,25 @@ func (u *UserRepositoryModule) GetPasswordByEmail(ctx context.Context, email str
 		return "", err
 	}
 	return pass, err
+}
+
+func (u *UserRepositoryModule) GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error) {
+	var user entity.UserEntity
+	err := u.db.QueryRow(ctx,
+		`select
+			id,
+			fullname,
+			email,
+			pass,
+		from
+			t_mst_user
+		where email = $1
+		and status = 1
+		`, email,
+	).Scan(&user.Id, &user.Fullname, &user.Email, &user.Pass)
+	if err != nil {
+		log.Errorf("[repository]: GetUserByEmail err: %v", err)
+		return &user, err
+	}
+	return &user, nil
 }

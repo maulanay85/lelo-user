@@ -22,4 +22,5 @@ type UserRepository interface {
 	InsertUser(ctx context.Context, user *entity.UserEntity) (int32, error)
 	ChangePassword(ctx context.Context, email string, pass string) error
 	GetPasswordByEmail(ctx context.Context, email string) (string, error)
+	GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error)
 }
