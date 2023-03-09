@@ -5,7 +5,9 @@ import (
 	entity "lelo-user/entity"
 
 	authcontroller "lelo-user/controller/auth"
+	rolerepository "lelo-user/repository/role"
 	userrepository "lelo-user/repository/user"
+	userrolerepository "lelo-user/repository/userrole"
 	userusecase "lelo-user/usecase/user"
 	utilauth "lelo-user/util/auth"
 
@@ -13,6 +15,9 @@ import (
 )
 
 var UserRepository *userrepository.UserRepositoryModule
+var RoleRepository *rolerepository.RoleRepositoryModule
+var UserRoleRepository *userrolerepository.UserRoleRepositoryModule
+
 var UserUsecaseModule *userusecase.UserUsecaseModule
 var UtilAuthModule *utilauth.UtilAuthModule
 var AuthModule *authcontroller.AuthControllerModule
@@ -23,7 +28,8 @@ func InitModule(ctx context.Context, configEntity *entity.Config, credentialEnti
 
 	// init repo
 	UserRepository = userrepository.NewUserRepository(*db)
-
+	RoleRepository = rolerepository.NewRoleRepository(*db)
+	UserRoleRepository = userrolerepository.NewUserRoleRepository(*db)
 	// init usecase
 	UserUsecaseModule = userusecase.NewUserusecase(UserRepository, UtilAuthModule)
 
