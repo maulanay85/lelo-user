@@ -26,3 +26,20 @@ func (uc *AuthControllerModule) RegisterUser(c *gin.Context) {
 	util.SendSuccess(c, id)
 
 }
+
+func (uc *AuthControllerModule) LoginUser(c *gin.Context) {
+	var loginData entity.LoginEntity
+	if err := c.ShouldBindJSON(&loginData); err != nil {
+		log.Errorf("[controller] error bind json on login: %#v", err)
+		wrap := fmt.Errorf("err: %w", util.ErrorErrorBadRequest)
+		util.SendErrorResponse(c, wrap)
+		return
+	}
+	token, err := uc.UserUsecase.Login(c, loginData.Email, loginData.Pass)
+	if err != nil {
+		util.SendErrorResponse(c, err)
+		return
+	}
+
+	util.SendSuccess(c, token)
+}

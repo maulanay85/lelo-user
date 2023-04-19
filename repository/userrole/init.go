@@ -1,6 +1,12 @@
 package userrole
 
-import "github.com/jackc/pgx/v4/pgxpool"
+import (
+	"context"
+
+	entity "lelo-user/entity"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+)
 
 type UserRoleRepositoryModule struct {
 	db *pgxpool.Pool
@@ -15,4 +21,5 @@ func NewUserRoleRepository(
 }
 
 type UserRoleRepository interface {
+	GetUserRoleByUserId(ctx context.Context, userId int64) (userRole *entity.UserRoleEntityJoin, err error)
 }

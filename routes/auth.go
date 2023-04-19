@@ -10,4 +10,5 @@ func (r routes) addAuth(rg *gin.RouterGroup) {
 	auth := rg.Group("/auth")
 
 	auth.POST("/register", module.AuthModule.RegisterUser)
+	auth.POST("/login", module.AuthModule.LoginUser)
 }

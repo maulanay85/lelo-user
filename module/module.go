@@ -31,7 +31,7 @@ func InitModule(ctx context.Context, configEntity *entity.Config, credentialEnti
 	RoleRepository = rolerepository.NewRoleRepository(*db)
 	UserRoleRepository = userrolerepository.NewUserRoleRepository(*db)
 	// init usecase
-	UserUsecaseModule = userusecase.NewUserusecase(UserRepository, UtilAuthModule)
+	UserUsecaseModule = userusecase.NewUserusecase(UserRepository, UtilAuthModule, UserRoleRepository)
 
 	// init controller
 	AuthModule = authcontroller.NewAuthController(UserUsecaseModule)

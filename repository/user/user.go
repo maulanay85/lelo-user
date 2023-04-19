@@ -71,7 +71,7 @@ func (u *UserRepositoryModule) GetUserByEmail(ctx context.Context, email string)
 			id,
 			fullname,
 			email,
-			pass,
+			pass
 		from
 			t_mst_user
 		where email = $1

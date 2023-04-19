@@ -44,20 +44,29 @@ func (u *UserUsecaseModule) RegisterUser(ctx context.Context, fullname string, e
 	return iduser, nil
 }
 
-func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string) (string, error) {
+func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string) (*entity.TokenEntity, error) {
 	user, err := u.Repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		log.Errorf("[usecase] Login: %v", err)
-		errorWrap := fmt.Errorf("error GetUserByEmail: %w", util.ErrorInternalServer)
-		return "", errorWrap
+		errorWrap := fmt.Errorf("wrong email or pass : %w", util.ErrorUnauthenticated)
+		return nil, errorWrap
 	}
-	if user.Id == 0 {
-		errorWrap := fmt.Errorf("wrong email or pass: %w", util.ErrorUnauthorized)
-		return "", errorWrap
-	}
-	if isValid := u.UtilAuth.CheckHashPassword(pass, user.Pass); isValid == false {
+	if isValid := u.UtilAuth.CheckHashPassword(pass, user.Pass); !isValid {
 		errorWrap := fmt.Errorf("wrong email or pass :%w", util.ErrorUnauthenticated)
-		return "", errorWrap
+		return nil, errorWrap
 	}
-	return "", nil
+	userRole, err := u.UserRuleRepo.GetUserRoleByUserId(ctx, user.Id)
+	if err != nil {
+		log.Errorf("[usecase] Login: %v", err)
+		errorWrap := fmt.Errorf("error :%w", util.ErrorInternalServer)
+		return nil, errorWrap
+	}
+
+	token, err := u.UtilAuth.GenerateToken(userRole)
+	if err != nil {
+		log.Errorf("[usecase] GenerateToken: %v", err)
+		errorWrap := fmt.Errorf("error :%w", util.ErrorInternalServer)
+		return nil, errorWrap
+	}
+	return token, nil
 }
