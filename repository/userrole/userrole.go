@@ -4,6 +4,7 @@ import (
 	"context"
 	entity "lelo-user/entity"
 
+	"github.com/jackc/pgx/v4"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -38,4 +39,19 @@ func (u *UserRoleRepositoryModule) GetUserRoleByUserId(ctx context.Context, user
 		return &userData, err
 	}
 	return &userData, nil
+}
+
+func (u *UserRoleRepositoryModule) InsertUserRoleTx(ctx context.Context, tx pgx.Tx, userRole *entity.UserRoleEntity) (int64, error) {
+	var id int64
+	err := tx.QueryRow(ctx,
+		`INSERT INTO t_map_user_role
+			(user_id, role_id, status)
+		VALUES($1, $2, 1) RETURNING id
+		`, userRole.UserId, userRole.RoleId,
+	).Scan(&id)
+	if err != nil {
+		log.Errorf("[repository]: InsertUserRoleTx err: %v", err)
+		return 0, err
+	}
+	return id, nil
 }

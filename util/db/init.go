@@ -4,29 +4,19 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func (u *UtilDBModule) BeginTx(ctx context.Context, opt ...pgx.TxOptions) (pgx.Tx, error) {
-	var tx pgx.Tx
-	var err error
+type UtilDBModule struct {
+	Db *pgxpool.Pool
+}
 
-	if len(opt) > 0 {
-		tx, err = u.Db.BeginTx(ctx, opt[0])
-	} else {
-		tx, err = u.Db.BeginTx(ctx, pgx.TxOptions{})
+func NewUtilDb(db *pgxpool.Pool) *UtilDBModule {
+	return &UtilDBModule{
+		Db: db,
 	}
+}
 
-	if err != nil {
-		return nil, err
-	}
-
-	defer func() {
-		if err != nil {
-			tx.Rollback(context.TODO())
-		} else {
-			tx.Commit(context.TODO())
-		}
-	}()
-
-	return tx, err
+type UtilDb interface {
+	BeginTransaction(ctx context.Context, opt ...pgx.TxOptions) (pgx.Tx, error)
 }

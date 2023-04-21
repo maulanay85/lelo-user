@@ -5,6 +5,7 @@ import (
 
 	entity "lelo-user/entity"
 
+	"github.com/jackc/pgx/v4"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,6 +25,23 @@ func (u *UserRepositoryModule) CheckEmailExist(ctx context.Context, email string
 func (u *UserRepositoryModule) InsertUser(ctx context.Context, user *entity.UserEntity) (int32, error) {
 	var id int32
 	err := u.db.QueryRow(ctx,
+		`INSERT INTO t_mst_user
+			(fullname, email, pass)
+		 VALUES
+		 	($1, $2, $3) Returning id
+		`, user.Fullname, user.Email, user.Pass,
+	).Scan(&id)
+	if err != nil {
+		log.Errorf("[repository]: InsertUser err: %v", err)
+		return 0, err
+	}
+	return id, nil
+}
+
+func (u *UserRepositoryModule) InsertUserTx(ctx context.Context, tx pgx.Tx, user *entity.UserEntity) (int64, error) {
+	var id int64
+
+	err := tx.QueryRow(ctx,
 		`INSERT INTO t_mst_user
 			(fullname, email, pass)
 		 VALUES

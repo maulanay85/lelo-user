@@ -5,6 +5,7 @@ import (
 
 	entity "lelo-user/entity"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -22,4 +23,5 @@ func NewUserRoleRepository(
 
 type UserRoleRepository interface {
 	GetUserRoleByUserId(ctx context.Context, userId int64) (userRole *entity.UserRoleEntityJoin, err error)
+	InsertUserRoleTx(ctx context.Context, tx pgx.Tx, userRole *entity.UserRoleEntity) (int64, error)
 }
