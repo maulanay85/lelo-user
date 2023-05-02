@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"os"
 
 	config "lelo-user/config"
@@ -17,13 +19,6 @@ import (
 
 func main() {
 
-	log.SetOutput(os.Stdout)
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp:   true,
-		TimestampFormat: "2006-01-02 15:04:05",
-	})
-	log.SetLevel(log.TraceLevel)
-
 	// handle panic
 	defer func() {
 		if err := recover(); err != nil {
@@ -38,6 +33,24 @@ func main() {
 		log.Errorf("error read config file: %#v", err)
 		return
 	}
+
+	logname := "lelo-user.log"
+	f, err := os.OpenFile(logname, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Printf("error create file: %s", logname)
+	}
+	defer f.Close()
+
+	log.SetOutput(io.MultiWriter(f, os.Stdout))
+	log.SetFormatter(&log.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	if config.ConfigData.Env == "dev" {
+		log.SetLevel(log.TraceLevel)
+	}
+
 	gin.SetMode(gin.ReleaseMode)
 
 	// initiate context
