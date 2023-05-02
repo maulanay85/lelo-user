@@ -34,3 +34,4 @@ func ReadConfiguration() error {
 	}
 	return nil
 }
+
