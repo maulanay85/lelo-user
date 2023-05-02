@@ -1,3 +1,5 @@
 config.yaml
 credential.yaml
 .vscode
+*.log
+lelo-user

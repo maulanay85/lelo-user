@@ -6,10 +6,8 @@ import (
 	"io"
 	"os"
 
-	config "lelo-user/config"
+	configuration "lelo-user/config"
 	"lelo-user/routes"
-
-	dbModule "lelo-user/config"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -27,7 +25,7 @@ func main() {
 	}()
 
 	// Read All Config
-	err := config.ReadConfiguration()
+	err := configuration.ReadConfiguration()
 
 	if err != nil {
 		log.Errorf("error read config file: %#v", err)
@@ -47,7 +45,7 @@ func main() {
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 
-	if config.ConfigData.Env == "dev" {
+	if configuration.ConfigData.Env == "dev" {
 		log.SetLevel(log.TraceLevel)
 	}
 
@@ -57,7 +55,7 @@ func main() {
 	ctx := context.Background()
 
 	// init db
-	db, err := dbModule.InitDb(ctx, &config.ConfigData, &config.CredentialData)
+	db, err := configuration.InitDb(ctx, &configuration.ConfigData, &configuration.CredentialData)
 	if err != nil {
 		log.Errorf("error init db: %#v", err)
 		return
@@ -65,13 +63,13 @@ func main() {
 
 	defer db.Close()
 
-	err = module.InitModule(ctx, &config.ConfigData, &config.CredentialData, db)
+	err = module.InitModule(ctx, &configuration.ConfigData, &configuration.CredentialData, db)
 	if err != nil {
 		log.Errorf("error init modules: %#v", err)
 		return
 	}
 
-	if err = routes.NewRoutes(gin.New(), int32(config.ConfigData.Port)).Run(); err != nil {
+	if err = routes.NewRoutes(gin.New(), int32(configuration.ConfigData.Port)).Run(); err != nil {
 		log.Errorf("error running server : %#v", err)
 	}
 
