@@ -22,10 +22,13 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'cd ${buildDestination}'
-                sh 'rm -f config.yaml credential.yaml lelo-user'
-                sh 'cd ${workDirectory}/${env.JOB_BASE_NAME}'
-                sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
+                sh 'whoami'
+                dir(buildDestination) {
+                    sh 'rm -f config.yaml credential.yaml lelo-user'                    
+                }
+                dir(workDirectory + '/' + env.JOB_BASE_NAME) {
+                    sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'    
+                }
             }
         }
     }
