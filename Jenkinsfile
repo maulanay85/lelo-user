@@ -25,6 +25,7 @@ pipeline {
                 sh 'cd $buildDestination'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
                 sh 'cd $workspace'
+                sh 'echo $workspace'
                 sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
