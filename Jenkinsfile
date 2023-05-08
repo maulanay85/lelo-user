@@ -22,9 +22,9 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'cd ${buildDestination}'
+                sh 'cd $buildDestination'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
-                cd pwd()
+                sh 'cd $workspace'
                 sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
