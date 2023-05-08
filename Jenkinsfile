@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        def workspace = pwd()
+        def workspace = echo pwd()
         def buildDestination = '/data/app/lelo/lelo-user/'
     }
     tools {
