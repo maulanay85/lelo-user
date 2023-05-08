@@ -16,5 +16,11 @@ pipeline {
                 sh 'GOOS=linux GOARCH=amd64 go build .'
             }
         }
+        stage('Deploy') {
+            echo pwd
+            // sh 'cd /data/app/lelo/lelo-user'
+            // sh 'rm config.yaml credential.yaml lelo-user'
+            // sh 'cp /'
+        }
     }
 }
