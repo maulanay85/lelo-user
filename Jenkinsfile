@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        def buildDestination = '/data/app/lelo/lelo-user/'
+        def buildDestination = '/data/app/lelo/lelo-user'
+        def workspace = '/var/lib/jenkins'
     }
     tools {
         go '1.19'
@@ -21,13 +22,10 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'echo ${env.WORKSPACE}'
-
-                echo pwd()
                 sh 'cd ${buildDestination}'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
-                // sh 'cd ${env.WORKSPACE}'
-                // sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
+                sh 'cd ${workspace}/${env.JOB_BASE_NAME}'
+                sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
     }
