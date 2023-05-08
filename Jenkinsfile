@@ -18,11 +18,9 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                echo env.JOB_NAME
                 echo pwd
             }
-            // sh 'cd /data/app/lelo/lelo-user'
-            // sh 'rm config.yaml credential.yaml lelo-user'
-            // sh 'cp /'
         }
     }
 }
