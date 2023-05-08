@@ -100,5 +100,6 @@ func (u *UserRepositoryModule) GetUserByEmail(ctx context.Context, email string)
 		log.Errorf("[repository]: GetUserByEmail err: %v", err)
 		return &user, err
 	}
+
 	return &user, nil
 }
