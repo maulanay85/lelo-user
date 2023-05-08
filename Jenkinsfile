@@ -24,9 +24,8 @@ pipeline {
                 echo pwd()
                 sh 'cd ${buildDestination}'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
-                sh 'cd ${env.WORKSPACE}'
                 sh 'echo ${env.WORKSPACE}'
-                sh 'echo ${env.JOB_NAME}'
+                sh 'cd ${env.WORKSPACE}'
                 sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
