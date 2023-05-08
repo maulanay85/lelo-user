@@ -111,3 +111,33 @@ func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string
 	}
 	return token, nil
 }
+
+func (u *UserUsecaseModule) ChangePassword(ctx context.Context, email, currPassword, newPassword string) (int64, error) {
+	log.Infof("Update Password for email: %s", email)
+	user, err := u.Repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		log.Errorf("[usecase] ChangePassword: %v", err)
+		errorWrap := fmt.Errorf("wrong email or pass : %w", util.ErrorUnauthenticated)
+		return 0, errorWrap
+	}
+	if isValid := u.UtilAuth.CheckHashPassword(currPassword, user.Pass); !isValid {
+		log.Errorf("[usecase] ChangePassword: password for email: %s is wrong", email)
+		errorWrap := fmt.Errorf("wrong email or pass :%w", util.ErrorUnauthenticated)
+		return 0, errorWrap
+	}
+	// hash password
+	hash, err := u.UtilAuth.HashPassword(newPassword)
+	if err != nil {
+		log.Errorf("[usecase] ChangePassword.HashPassword: %v", err)
+		errorWrap := fmt.Errorf("error: %w", util.ErrorInternalServer)
+		return 0, errorWrap
+	}
+	err = u.Repo.ChangePassword(ctx, email, hash)
+	if err != nil {
+		log.Errorf("[usecase] ChangePassword.ChangePassword: %v", err)
+		errorWrap := fmt.Errorf("error: %w", util.ErrorInternalServer)
+		return 0, errorWrap
+	}
+	log.Infof("change password for %s is success", email)
+	return user.Id, nil
+}
