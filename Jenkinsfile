@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh 'cd ${buildDestination}'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
-                sh 'cd ${workspace}'
+                cd pwd()
                 sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
