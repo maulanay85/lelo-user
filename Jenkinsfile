@@ -18,7 +18,6 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                pwd
                 echo pwd
             }
             // sh 'cd /data/app/lelo/lelo-user'
