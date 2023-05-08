@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        def workspace = env.WORKSPACE
-        def jobName = env.JOB_NAME
         def buildDestination = '/data/app/lelo/lelo-user/'
     }
     tools {
@@ -26,9 +24,9 @@ pipeline {
                 echo pwd()
                 sh 'cd ${buildDestination}'
                 sh 'rm -f config.yaml credential.yaml lelo-user'
-                sh 'cd ${workspace}/${jobName}'
-                sh 'echo ${workspace}'
-                sh 'echo ${jobName}'
+                sh 'cd ${env.WORKSPACE}/${env.JOB_NAME}'
+                sh 'echo ${env.WORKSPACE}'
+                sh 'echo ${env.JOB_NAME}'
                 sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'
             }
         }
