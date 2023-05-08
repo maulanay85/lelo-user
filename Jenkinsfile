@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        def project = env.JOB_NAME
+        def project = '${env.JOB_NAME}'
         def workspace = pwd()
     }
     tools {
