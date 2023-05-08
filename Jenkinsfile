@@ -1,5 +1,7 @@
 pipeline {
     agent any
+    def project = env.JOB_NAME
+    def workspace = pwd()
 
     tools {
         go '1.19'
@@ -18,8 +20,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo env.JOB_NAME
-                echo pwd
+                echo project
+                echo workspace
             }
         }
     }
