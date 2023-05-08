@@ -1,10 +1,15 @@
 package auth
 
 import (
+	"errors"
 	"lelo-user/config"
 	entity "lelo-user/entity"
+	"strings"
 	"time"
 
+	response "lelo-user/util"
+
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
@@ -59,4 +64,58 @@ func (u *UtilAuthModule) GenerateToken(userRole *entity.UserRoleEntityJoin) (*en
 		AccessToken:  t,
 		RefreshToken: rt,
 	}, nil
+}
+
+func (u *UtilAuthModule) JwtTokenCheck(c *gin.Context) {
+	jwtToken, err := extractBearerToken(c.GetHeader("Authorization"))
+	if err != nil {
+		res := response.ResponseEntity{Code: 401, Message: "unauthicated"}
+		c.JSON(401, res)
+		return
+	}
+
+	token, err := parseToken(jwtToken)
+	if err != nil {
+		res := response.ResponseEntity{Code: 500, Message: "internal server error"}
+		c.JSON(500, res)
+		return
+	}
+
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		res := response.ResponseEntity{Code: 500, Message: "internal server error"}
+		c.JSON(500, res)
+		return
+	}
+	id := claim["id"]
+	role := claim["role"]
+
+	c.Set("id", id)
+	c.Set("role", role)
+	c.Next()
+}
+
+func extractBearerToken(header string) (string, error) {
+	if header == "" {
+		return "", errors.New("bad header for value")
+	}
+	jwt := strings.Split(header, " ")
+	if len(jwt) != 2 {
+		return "", errors.New("incorectly authorization header")
+	}
+	return jwt[1], nil
+}
+
+func parseToken(jwtToken string) (*jwt.Token, error) {
+	credentialData := config.CredentialData
+	token, err := jwt.Parse(jwtToken, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("bad method signed received")
+		}
+		return []byte(credentialData.Jwt.SecretKey), nil
+	})
+	if err != nil {
+		return nil, errors.New("bad jwt token")
+	}
+	return token, nil
 }
