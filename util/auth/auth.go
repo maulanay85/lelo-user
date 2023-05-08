@@ -70,21 +70,21 @@ func (u *UtilAuthModule) JwtTokenCheck(c *gin.Context) {
 	jwtToken, err := extractBearerToken(c.GetHeader("Authorization"))
 	if err != nil {
 		res := response.ResponseEntity{Code: 401, Message: "unauthicated"}
-		c.JSON(401, res)
+		c.AbortWithStatusJSON(401, res)
 		return
 	}
 
 	token, err := parseToken(jwtToken)
 	if err != nil {
 		res := response.ResponseEntity{Code: 500, Message: "internal server error"}
-		c.JSON(500, res)
+		c.AbortWithStatusJSON(500, res)
 		return
 	}
 
 	claim, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		res := response.ResponseEntity{Code: 500, Message: "internal server error"}
-		c.JSON(500, res)
+		c.AbortWithStatusJSON(500, res)
 		return
 	}
 	id := claim["id"]

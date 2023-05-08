@@ -37,4 +37,5 @@ func NewUserusecase(
 type UserUsecase interface {
 	RegisterUser(ctx context.Context, fullname string, email string, pass string) (int64, error)
 	Login(ctx context.Context, email string, pass string) (*entity.TokenEntity, error)
+	ChangePassword(ctx context.Context, email, currPassword, newPassword string) (int64, error)
 }

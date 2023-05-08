@@ -113,7 +113,7 @@ func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string
 }
 
 func (u *UserUsecaseModule) ChangePassword(ctx context.Context, email, currPassword, newPassword string) (int64, error) {
-	log.Infof("Update Password for email: %s", email)
+	log.Infof("Change Password for email: %s", email)
 	user, err := u.Repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		log.Errorf("[usecase] ChangePassword: %v", err)

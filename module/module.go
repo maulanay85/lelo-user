@@ -5,6 +5,7 @@ import (
 	entity "lelo-user/entity"
 
 	authcontroller "lelo-user/controller/auth"
+	usercontroller "lelo-user/controller/user"
 	rolerepository "lelo-user/repository/role"
 	userrepository "lelo-user/repository/user"
 	userrolerepository "lelo-user/repository/userrole"
@@ -15,14 +16,19 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
+// db
 var UserRepository *userrepository.UserRepositoryModule
 var RoleRepository *rolerepository.RoleRepositoryModule
 var UserRoleRepository *userrolerepository.UserRoleRepositoryModule
 
+// usecase
 var UserUsecaseModule *userusecase.UserUsecaseModule
 var UtilAuthModule *utilauth.UtilAuthModule
-var AuthModule *authcontroller.AuthControllerModule
 var UtilDbModule *dbauth.UtilDBModule
+
+// controller
+var AuthModule *authcontroller.AuthControllerModule
+var UserController *usercontroller.UserControllerModule
 
 func InitModule(ctx context.Context, configEntity *entity.Config, credentialEntity *entity.Credential, db *pgxpool.Pool) error {
 
@@ -39,6 +45,7 @@ func InitModule(ctx context.Context, configEntity *entity.Config, credentialEnti
 
 	// init controller
 	AuthModule = authcontroller.NewAuthController(UserUsecaseModule)
+	UserController = usercontroller.NewUserController(UserUsecaseModule)
 	// init server
 
 	return nil

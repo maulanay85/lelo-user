@@ -60,7 +60,7 @@ func (u *UserRepositoryModule) ChangePassword(ctx context.Context, email string,
 		`UPDATE t_mst_user
 			SET pass = $1
 		WHERE email = $2
-		`, email, pass)
+		`, pass, email)
 	if err != nil {
 		log.Errorf("[repository]: ChangePassword err: %v", err)
 		return err

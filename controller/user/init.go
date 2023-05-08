@@ -6,19 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthControllerModule struct {
+type UserControllerModule struct {
 	UserUsecase userusecase.UserUsecase
 }
 
-func NewAuthController(
+func NewUserController(
 	userusecase userusecase.UserUsecase,
-) *AuthControllerModule {
-	return &AuthControllerModule{
+) *UserControllerModule {
+	return &UserControllerModule{
 		UserUsecase: userusecase,
 	}
 }
 
-type AuthController interface {
-	RegisterUser(c *gin.Context)
-	LoginUser(c *gin.Context)
+type UserController interface {
+	ChangePassword(c *gin.Context)
 }

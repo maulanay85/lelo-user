@@ -17,11 +17,12 @@ func NewRoutes(router *gin.Engine, port int32) routes {
 		router: router,
 		port:   port,
 	}
+
 	v1 := r.router.Group("/v1")
 
 	r.addPing(v1)
 	r.addAuth(v1)
-
+	r.addUser(v1)
 	return r
 }
 

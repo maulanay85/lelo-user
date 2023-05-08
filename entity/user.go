@@ -20,3 +20,9 @@ type LoginEntity struct {
 	Email string `json:"email" binding:"required,email"`
 	Pass  string `json:"pass" binding:"required"`
 }
+
+type ChangePasswordEntity struct {
+	Email    string `json:"email" binding:"required,email"`
+	CurrPass string `json:"currPass" binding:"required"`
+	NewPass  string `json:"newPass" binding:"required"`
+}
