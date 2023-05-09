@@ -55,7 +55,8 @@ func (uc *AuthControllerModule) RefreshToken(c *gin.Context) {
 	token, err := uc.UserUsecase.RefreshToken(c, refreshToken.RefreshToken)
 	if err != nil {
 		log.Errorf("[controller] error RefreshToken.RefreshToken: %#v", err)
-		util.SendErrorResponse(c, err)
+		wrap := fmt.Errorf("err: %w", util.ErrorUnauthenticated)
+		util.SendErrorResponse(c, wrap)
 		return
 	}
 	util.SendSuccess(c, token)
