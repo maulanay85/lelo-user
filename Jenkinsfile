@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         def buildDestination = '/data/app/lelo/lelo-user'
-        def workDirectory = '/var/lib/jenkins'
+        def workDirectory = '/var/lib/jenkins/workspace'
     }
     tools {
         go '1.19'
@@ -22,12 +22,11 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'whoami'
                 dir(buildDestination) {
                     sh 'rm -f config.yaml credential.yaml lelo-user'                    
                 }
                 dir(workDirectory + '/' + env.JOB_BASE_NAME) {
-                    sh 'cp config.yaml credential.yaml lelo-user ${buildDestination}'    
+                    sh 'cp lelo-user ${buildDestination}'    
                 }
             }
         }
