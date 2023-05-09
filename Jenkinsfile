@@ -27,7 +27,8 @@ pipeline {
                 }
                 dir(workDirectory + '/' + env.JOB_BASE_NAME) {
                     sh 'cp lelo-user ${buildDestination}'
-                    sh 'systemctl restart lelo-user.service'
+                    sh 'systemctl stop lelo-user.service'
+                    sh 'systemctl start lelo-user.service'
                 }
             }
         }
