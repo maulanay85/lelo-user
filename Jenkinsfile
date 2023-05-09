@@ -23,10 +23,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 dir(buildDestination) {
-                    sh 'rm -f config.yaml credential.yaml lelo-user'                    
+                    sh 'rm -f lelo-user'                    
                 }
                 dir(workDirectory + '/' + env.JOB_BASE_NAME) {
-                    sh 'cp lelo-user ${buildDestination}'    
+                    sh 'cp lelo-user ${buildDestination}'
+                    sh 'systemctl restart lelo-user.service'
                 }
             }
         }
