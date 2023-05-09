@@ -141,3 +141,25 @@ func (u *UserUsecaseModule) ChangePassword(ctx context.Context, email, currPassw
 	log.Infof("change password for %s is success", email)
 	return user.Id, nil
 }
+
+func (u *UserUsecaseModule) RefreshToken(ctx context.Context, rt string) (*entity.TokenEntity, error) {
+	id, err := u.UtilAuth.RefreshToken(rt)
+	if err != nil {
+		log.Errorf("[usecase] RefreshToken.RefreshToken: %v", err)
+		errorWrap := fmt.Errorf("error: %w", util.ErrorInternalServer)
+		return nil, errorWrap
+	}
+	userRole, err := u.UserRuleRepo.GetUserRoleByUserId(ctx, id)
+	if err != nil {
+		log.Errorf("[usecase] RefreshToken.GetUserRoleByUserId: %v", err)
+		errorWrap := fmt.Errorf("error :%w", util.ErrorInternalServer)
+		return nil, errorWrap
+	}
+	token, err := u.UtilAuth.GenerateToken(userRole)
+	if err != nil {
+		log.Errorf("[usecase] GenerateToken: %v", err)
+		errorWrap := fmt.Errorf("error :%w", util.ErrorInternalServer)
+		return nil, errorWrap
+	}
+	return token, nil
+}

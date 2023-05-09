@@ -43,3 +43,20 @@ func (uc *AuthControllerModule) LoginUser(c *gin.Context) {
 
 	util.SendSuccess(c, token)
 }
+
+func (uc *AuthControllerModule) RefreshToken(c *gin.Context) {
+	var refreshToken entity.RefreshTokenEntity
+	if err := c.ShouldBindJSON(&refreshToken); err != nil {
+		log.Errorf("[controller] error bind json on RefreshToken: %#v", err)
+		wrap := fmt.Errorf("err: %w", util.ErrorErrorBadRequest)
+		util.SendErrorResponse(c, wrap)
+		return
+	}
+	token, err := uc.UserUsecase.RefreshToken(c, refreshToken.RefreshToken)
+	if err != nil {
+		log.Errorf("[controller] error RefreshToken.RefreshToken: %#v", err)
+		util.SendErrorResponse(c, err)
+		return
+	}
+	util.SendSuccess(c, token)
+}

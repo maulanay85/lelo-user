@@ -52,6 +52,7 @@ func (u *UtilAuthModule) GenerateToken(userRole *entity.UserRoleEntityJoin) (*en
 	refreshToken := jwt.New(jwt.SigningMethodHS512)
 	rtClaims := refreshToken.Claims.(jwt.MapClaims)
 	rtClaims["sub"] = userRole.Email
+	rtClaims["id"] = userRole.Id
 	rtClaims["exp"] = time.Now().Add(time.Minute * time.Duration(configData.Exp.RefreshToken)).Unix()
 
 	rt, err := refreshToken.SignedString([]byte(credentialData.Jwt.SecretKey))
@@ -118,4 +119,20 @@ func parseToken(jwtToken string) (*jwt.Token, error) {
 		return nil, errors.New("bad jwt token")
 	}
 	return token, nil
+}
+
+func (u *UtilAuthModule) RefreshToken(rt string) (int64, error) {
+	token, err := parseToken(rt)
+	if err != nil {
+		log.Errorf("error parse token: %v", err)
+		return 0, err
+	}
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		log.Errorf("error claims token: %v", err)
+		return 0, err
+	}
+	id := claim["id"]
+
+	return int64(id.(float64)), nil
 }

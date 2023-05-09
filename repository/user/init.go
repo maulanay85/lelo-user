@@ -25,4 +25,5 @@ type UserRepository interface {
 	ChangePassword(ctx context.Context, email string, pass string) error
 	GetPasswordByEmail(ctx context.Context, email string) (string, error)
 	GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error)
+	GetUserById(ctx context.Context, id int64) (*entity.UserEntity, error)
 }

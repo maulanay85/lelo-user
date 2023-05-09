@@ -13,6 +13,7 @@ type UtilAuth interface {
 	CheckHashPassword(pass string, hashPass string) bool
 	GenerateToken(userRole *entity.UserRoleEntityJoin) (*entity.TokenEntity, error)
 	JwtTokenCheck(c *gin.Context)
+	RefreshToken(rt string) (int64, error)
 }
 
 func NewUtilAuth() *UtilAuthModule {

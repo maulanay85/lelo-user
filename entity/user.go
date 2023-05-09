@@ -26,3 +26,7 @@ type ChangePasswordEntity struct {
 	CurrPass string `json:"currPass" binding:"required"`
 	NewPass  string `json:"newPass" binding:"required"`
 }
+
+type RefreshTokenEntity struct {
+	RefreshToken string `json:"refreshToken" binding:"required"`
+}

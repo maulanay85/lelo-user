@@ -103,3 +103,24 @@ func (u *UserRepositoryModule) GetUserByEmail(ctx context.Context, email string)
 
 	return &user, nil
 }
+
+func (u *UserRepositoryModule) GetUserById(ctx context.Context, id int64) (*entity.UserEntity, error) {
+	var user entity.UserEntity
+	err := u.db.QueryRow(ctx,
+		`select
+			id,
+			fullname,
+			email
+		from
+			t_mst_user
+		where email = $1
+		and status = 1
+		`, id,
+	).Scan(&user.Id, &user.Fullname, &user.Email)
+	if err != nil {
+		log.Errorf("[repository]: GetUserByEmail err: %v", err)
+		return &user, err
+	}
+
+	return &user, nil
+}

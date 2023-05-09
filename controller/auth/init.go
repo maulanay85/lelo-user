@@ -21,4 +21,5 @@ func NewAuthController(
 type AuthController interface {
 	RegisterUser(c *gin.Context)
 	LoginUser(c *gin.Context)
+	RefreshToken(c *gin.Context)
 }
