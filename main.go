@@ -25,7 +25,7 @@ func main() {
 	}()
 
 	// Read All Config
-	err := configuration.ReadConfiguration()
+	err := configuration.ReadConfiguration(".")
 
 	if err != nil {
 		log.Errorf("error read config file: %#v", err)

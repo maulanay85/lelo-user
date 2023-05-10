@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	entity "lelo-user/entity"
 
@@ -10,13 +11,17 @@ import (
 var ConfigData entity.Config
 var CredentialData entity.Credential
 
-func ReadConfiguration() error {
+func ReadConfiguration(path string) error {
 
-	configFile, err := ioutil.ReadFile("./config.yaml")
+	configFile, err := ioutil.ReadFile(
+		fmt.Sprintf("%s/config.yaml", path),
+	)
 	if err != nil {
 		return err
 	}
-	credentialFile, err := ioutil.ReadFile("./credential.yaml")
+	credentialFile, err := ioutil.ReadFile(
+		fmt.Sprintf("%s/credential.yaml", path),
+	)
 	if err != nil {
 		return err
 	}
@@ -34,4 +39,3 @@ func ReadConfiguration() error {
 	}
 	return nil
 }
-
