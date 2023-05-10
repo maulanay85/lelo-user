@@ -20,9 +20,22 @@ func (u *UserUsecaseModule) RegisterUser(ctx context.Context, fullname string, e
 		return 0, errorWrap
 	}
 	if id != 0 {
-		log.Error("[usecase] RegisterUser: email is exist")
-		errorWrap := fmt.Errorf("email is exist: %w", util.ErrorPreCondition)
-		return 0, errorWrap
+		status, err := u.Repo.GetStatusByEmail(ctx, email)
+		if status == 0 {
+			log.Error("[usecase] RegisterUser: waiting email verification")
+			errorWrap := fmt.Errorf("waiting email verification: %w", util.ErrorPreCondition)
+			return 0, errorWrap
+		} else if status == 1 {
+			log.Error("[usecase] RegisterUser: email is exist")
+			errorWrap := fmt.Errorf("email is exist: %w", util.ErrorPreCondition)
+			return 0, errorWrap
+		}
+		if err != nil {
+			log.Errorf("[usecase] RegisterUser.GetStatusByEmail: %v", err)
+			errorWrap := fmt.Errorf("error: %w", util.ErrorInternalServer)
+			return 0, errorWrap
+		}
+
 	}
 	// hash password
 	hash, err := u.UtilAuth.HashPassword(pass)

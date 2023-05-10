@@ -123,4 +123,13 @@ func (u *UserRepositoryModule) GetUserById(ctx context.Context, id int64) (*enti
 	}
 
 	return &user, nil
+func (u *UserRepositoryModule) GetStatusByEmail(ctx context.Context, email string) (int, error) {
+	var status int
+	err := u.db.QueryRow(ctx, `
+		SELECT status FROM t_mst_user where email = $1`, email).Scan(&status)
+	if err != nil {
+		log.Errorf("[repository]: GetStatusByEmail err: %v", err)
+		return 0, err
+	}
+	return status, nil
 }
