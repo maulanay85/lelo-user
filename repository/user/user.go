@@ -121,8 +121,9 @@ func (u *UserRepositoryModule) GetUserById(ctx context.Context, id int64) (*enti
 		log.Errorf("[repository]: GetUserByEmail err: %v", err)
 		return &user, err
 	}
-
 	return &user, nil
+}
+
 func (u *UserRepositoryModule) GetStatusByEmail(ctx context.Context, email string) (int, error) {
 	var status int
 	err := u.db.QueryRow(ctx, `
