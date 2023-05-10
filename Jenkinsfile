@@ -20,6 +20,13 @@ pipeline {
                 sh 'GOOS=linux GOARCH=amd64 go build .'
             }
         }
+        stage('Run Migration') {
+            steps {
+                dir(workDirectory + '/' + env.JOB_BASE_NAME + '/migration') {
+                    sh 'go run migration.go -type=up'
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 dir(buildDestination) {
