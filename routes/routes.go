@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"lelo-user/util/middleware"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -19,7 +20,7 @@ func NewRoutes(router *gin.Engine, port int32) routes {
 	}
 
 	v1 := r.router.Group("/v1")
-
+	v1.Use(middleware.CORSMiddleware())
 	r.addPing(v1)
 	r.addAuth(v1)
 	r.addUser(v1)
