@@ -19,8 +19,8 @@ func NewRoutes(router *gin.Engine, port int32) routes {
 		port:   port,
 	}
 
+	r.router.Use(middleware.CORSMiddleware())
 	v1 := r.router.Group("/v1")
-	v1.Use(middleware.CORSMiddleware())
 	r.addPing(v1)
 	r.addAuth(v1)
 	r.addUser(v1)
