@@ -21,6 +21,14 @@ type LoginEntity struct {
 	Pass  string `json:"pass" binding:"required"`
 }
 
+type LoginResponseEntity struct {
+	Id          int64  `json:"id"`
+	Fullname    string `json:"fullname"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+	TokenEntity
+}
+
 type ChangePasswordEntity struct {
 	Email    string `json:"email" binding:"required,email"`
 	CurrPass string `json:"currPass" binding:"required"`

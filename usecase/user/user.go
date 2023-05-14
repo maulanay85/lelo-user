@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	entity "lelo-user/entity"
 	util "lelo-user/util"
@@ -71,7 +72,7 @@ func (u *UserUsecaseModule) RegisterUser(ctx context.Context, fullname string, e
 	// insert user
 	user := entity.UserEntity{
 		Email:    email,
-		Fullname: fullname,
+		Fullname: strings.ToUpper(fullname),
 		Pass:     hash,
 	}
 	iduser, err := u.Repo.InsertUserTx(ctx, tx, &user)
@@ -98,7 +99,7 @@ func (u *UserUsecaseModule) RegisterUser(ctx context.Context, fullname string, e
 	return iduser, nil
 }
 
-func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string) (*entity.TokenEntity, error) {
+func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string) (*entity.LoginResponseEntity, error) {
 	user, err := u.Repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		log.Errorf("[usecase] Login: %v", err)
@@ -122,7 +123,14 @@ func (u *UserUsecaseModule) Login(ctx context.Context, email string, pass string
 		errorWrap := fmt.Errorf("error :%w", util.ErrorInternalServer)
 		return nil, errorWrap
 	}
-	return token, nil
+	reponse := entity.LoginResponseEntity{
+		Id:          user.Id,
+		Email:       user.Email,
+		Fullname:    strings.Title(user.Fullname),
+		PhoneNumber: user.PhoneNumber,
+		TokenEntity: *token,
+	}
+	return &reponse, nil
 }
 
 func (u *UserUsecaseModule) ChangePassword(ctx context.Context, email, currPassword, newPassword string) (int64, error) {
