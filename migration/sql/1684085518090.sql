@@ -1,0 +1,1 @@
+alter table t_mst_user_address add column is_deleted boolean not null default false;
