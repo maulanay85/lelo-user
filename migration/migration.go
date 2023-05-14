@@ -94,7 +94,7 @@ func checkMigrationTable(ctx context.Context, conn *pgx.Conn) error {
 	fmt.Println("table migrations is not exist, create table...")
 	createTable := `CREATE TABLE schema_migration(
 		id serial,
-		migration_name varchar(100),
+		migration_name varchar(100) primary key,
 		migration_date timestamp DEFAULT CURRENT_TIMESTAMP
 	);`
 
@@ -131,6 +131,19 @@ func createMigrationFile() error {
 
 func upMigration(ctx context.Context, conn *pgx.Conn) error {
 	fmt.Println("process up migration")
+	trx, err := conn.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		wrap := fmt.Errorf("error begin transaction")
+		return wrap
+	}
+
+	defer func() {
+		if err != nil {
+			trx.Rollback(ctx)
+		} else {
+			trx.Commit(ctx)
+		}
+	}()
 	rows, err := conn.Query(ctx, "SELECT migration_name from schema_migration")
 
 	if err != nil {
