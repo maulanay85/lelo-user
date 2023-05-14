@@ -1,5 +1,5 @@
 create table t_mst_village(
-    id bigserial,
+    id bigserial primary key,
     name varchar(50) not null,
     district_id integer not null,
     is_deleted boolean default false,
@@ -12,7 +12,7 @@ create table t_mst_village(
 create index idx_district_id_name on public.t_mst_village(district_id, name);
 
 create table t_mst_district(
-    id bigserial,
+    id bigserial primary key,
     name varchar(50) not null,
     city_id integer not null,
     is_deleted boolean default false,
@@ -25,7 +25,7 @@ create table t_mst_district(
 create index idx_city_id_name on public.t_mst_district(city_id, name);
 
 create table t_mst_city(
-    id bigserial,
+    id bigserial primary key,
     name varchar(50) not null,
     province_id integer not null,
     is_deleted boolean default false,
@@ -39,7 +39,7 @@ create index idx_province_id_name on public.t_mst_city(province_id, name);
 
 
 create table t_mst_province(
-    id bigserial,
+    id bigserial primary key,
     name varchar(50) not null,
     is_deleted boolean default false,
     created_by integer,
@@ -51,7 +51,7 @@ create table t_mst_province(
 create index idx_id_name on public.t_mst_province(name);
 
 create table t_mst_user_address(
-    id bigserial,
+    id bigserial primary key,
     user_id integer not null,
     province_id integer not null,
     city_id integer not null,
