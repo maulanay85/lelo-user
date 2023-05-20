@@ -24,6 +24,7 @@ func NewRoutes(router *gin.Engine, port int32) routes {
 	r.addPing(v1)
 	r.addAuth(v1)
 	r.addUser(v1)
+	r.addLocation(v1)
 	return r
 }
 
