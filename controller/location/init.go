@@ -21,4 +21,5 @@ func NewLocationController(
 type LocationController interface {
 	GetProvince(c *gin.Context)
 	GetCity(c *gin.Context)
+	GetDistrictByCityId(c *gin.Context)
 }

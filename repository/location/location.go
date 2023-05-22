@@ -86,6 +86,44 @@ func (lc *LocationRepoistoryModule) GetCityByProvinceId(ctx context.Context, pro
 	return cities, nil
 }
 
+func (lc *LocationRepoistoryModule) GetDistrictByCityId(ctx context.Context, cityId int64, name string) ([]entity.DistrictEntity, error) {
+	var distrcits []entity.DistrictEntity
+	sql := `
+		SELECT
+			id, 
+			name,
+			city_id,
+			is_deleted,
+			created_time,
+			updated_time
+		FROM 
+			t_mst_district
+		WHERE
+			is_deleted = false
+			%s
+	`
+	query, queryValue := helperGetDistrict(int16(cityId), name)
+	sql = fmt.Sprintf(sql, query)
+
+	rows, err := lc.db.Query(ctx, sql, queryValue...)
+	if err != nil {
+		log.Errorf("[repository]: GetDistrictByCityId err: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		district := entity.DistrictEntity{}
+		err := rows.Scan(&district.Id, &district.Name, &district.CityId, &district.IsDeleted, &district.CreatedTime, &district.UpdatedTime)
+		if err != nil {
+			log.Errorf("[repository]: Getdistrict err scan rows: %v", err)
+			return nil, err
+		}
+		distrcits = append(distrcits, district)
+	}
+	return distrcits, nil
+}
+
 func helperGetCity(id int16, name string) (query string, value []interface{}) {
 	parameter := []string{}
 	parameterValue := []interface{}{}
@@ -136,6 +174,34 @@ func helperGetProvince(name string) (query string, value []interface{}) {
 		queryResult += strings.Join(parameter, " and ")
 	}
 	fmt.Print(queryResult)
+	return queryResult, parameterValue
+
+}
+
+func helperGetDistrict(id int16, name string) (query string, value []interface{}) {
+	parameter := []string{}
+	parameterValue := []interface{}{}
+
+	var queryResult string
+
+	if id != 0 {
+		parameter = append(parameter, "city_id = $%d")
+		parameterValue = append(parameterValue, id)
+	}
+	if name != "" {
+		parameter = append(parameter, "name ilike $%d")
+		parameterValue = append(parameterValue, "%"+name+"%")
+	}
+
+	// generate
+	if len(parameter) > 0 {
+		queryResult += " and "
+
+		for i := 0; i < len(parameter); i++ {
+			parameter[i] = fmt.Sprintf(parameter[i], i+1)
+		}
+		queryResult += strings.Join(parameter, " and ")
+	}
 	return queryResult, parameterValue
 
 }

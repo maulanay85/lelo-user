@@ -13,5 +13,6 @@ func (r routes) addLocation(rg *gin.RouterGroup) {
 	{
 		location.GET("/province", module.LocationController.GetProvince)
 		location.GET("/province/:provinceId/city", module.LocationController.GetCity)
+		location.GET("/city/:cityId/district", module.LocationController.GetDistrictByCityId)
 	}
 }
