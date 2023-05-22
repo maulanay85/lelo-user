@@ -43,3 +43,16 @@ func (lc *LocationControllerModule) GetDistrictByCityId(c *gin.Context) {
 	}
 	util.SendSuccess(c, districts)
 }
+
+func (lc *LocationControllerModule) GetVillageByDistrictId(c *gin.Context) {
+	name := c.Query("name")
+	districtId := c.Param("districtId")
+	id, _ := strconv.ParseInt(districtId, 10, 64)
+
+	districts, err := lc.LocationUsecase.GetVillageByDistrictId(c, id, name)
+	if err != nil {
+		util.SendErrorResponse(c, err)
+		return
+	}
+	util.SendSuccess(c, districts)
+}

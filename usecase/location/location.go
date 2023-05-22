@@ -41,3 +41,14 @@ func (l *LocationUsecaseModule) GetDistrictByCityId(ctx context.Context, cityId 
 
 	return distrcits, nil
 }
+
+func (l *LocationUsecaseModule) GetVillageByDistrictId(ctx context.Context, cityId int64, name string) ([]entity.VillageEntity, error) {
+	villages, err := l.LocationRepository.GetVillageByDistrictId(ctx, cityId, name)
+	if err != nil {
+		log.Errorf("[usecase] GetVillageByDistrictId: %v", err)
+		errorWrap := fmt.Errorf("error: %w", util.ErrorInternalServer)
+		return []entity.VillageEntity{}, errorWrap
+	}
+
+	return villages, nil
+}
