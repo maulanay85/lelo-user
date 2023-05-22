@@ -48,6 +48,72 @@ func (l *LocationRepoistoryModule) GetProvince(ctx context.Context, name string)
 	return provinces, nil
 }
 
+func (lc *LocationRepoistoryModule) GetCityByProvinceId(ctx context.Context, provinceId int64, name string) ([]entity.CityEntity, error) {
+	var cities []entity.CityEntity
+	sql := `
+		SELECT
+			id, 
+			name,
+			province_id,
+			is_deleted,
+			created_time,
+			updated_time
+		FROM 
+			t_mst_city
+		WHERE
+			is_deleted = false
+			%s
+	`
+	query, queryValue := helperGetCity(int16(provinceId), name)
+	sql = fmt.Sprintf(sql, query)
+
+	rows, err := lc.db.Query(ctx, sql, queryValue...)
+	if err != nil {
+		log.Errorf("[repository]: GetCity err: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		city := entity.CityEntity{}
+		err := rows.Scan(&city.Id, &city.Name, &city.ProvinceId, &city.IsDeleted, &city.CreatedTime, &city.UpdatedTime)
+		if err != nil {
+			log.Errorf("[repository]: GetCity err scan rows: %v", err)
+			return nil, err
+		}
+		cities = append(cities, city)
+	}
+	return cities, nil
+}
+
+func helperGetCity(id int16, name string) (query string, value []interface{}) {
+	parameter := []string{}
+	parameterValue := []interface{}{}
+
+	var queryResult string
+
+	if id != 0 {
+		parameter = append(parameter, "province_id = $%d")
+		parameterValue = append(parameterValue, id)
+	}
+	if name != "" {
+		parameter = append(parameter, "name ilike $%d")
+		parameterValue = append(parameterValue, "%"+name+"%")
+	}
+
+	// generate
+	if len(parameter) > 0 {
+		queryResult += " and "
+
+		for i := 0; i < len(parameter); i++ {
+			parameter[i] = fmt.Sprintf(parameter[i], i+1)
+		}
+		queryResult += strings.Join(parameter, " and ")
+	}
+	return queryResult, parameterValue
+
+}
+
 func helperGetProvince(name string) (query string, value []interface{}) {
 	parameter := []string{}
 	parameterValue := []interface{}{}

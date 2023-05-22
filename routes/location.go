@@ -12,5 +12,6 @@ func (r routes) addLocation(rg *gin.RouterGroup) {
 	location.Use(authModule.JwtTokenCheck)
 	{
 		location.GET("/province", module.LocationController.GetProvince)
+		location.GET("/province/:provinceId/city", module.LocationController.GetCity)
 	}
 }
