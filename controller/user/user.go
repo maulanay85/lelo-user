@@ -28,3 +28,13 @@ func (uc *UserControllerModule) ChangePassword(c *gin.Context) {
 	}
 	util.SendSuccess(c, id)
 }
+
+func (uc *UserControllerModule) GetUserDataById(c *gin.Context) {
+	id, _ := c.Get("id")
+	user, err := uc.UserUsecase.GetUserDataById(c, int64(id.(float64)))
+	if err != nil {
+		util.SendErrorResponse(c, err)
+		return
+	}
+	util.SendSuccess(c, user)
+}

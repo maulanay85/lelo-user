@@ -7,6 +7,7 @@ type UserEntity struct {
 	PhoneNumber string `json:"phoneNumber"`
 	Pass        string `json:"-"`
 	Status      int    `json:"status"`
+	Avatar      string `json:"avatar"`
 	BaseEntity
 }
 

@@ -39,4 +39,5 @@ type UserUsecase interface {
 	Login(ctx context.Context, email string, pass string) (*entity.LoginResponseEntity, error)
 	ChangePassword(ctx context.Context, email, currPassword, newPassword string) (int64, error)
 	RefreshToken(ctx context.Context, rt string) (*entity.TokenEntity, error)
+	GetUserDataById(ctx context.Context, id int64) (*entity.UserEntity, error)
 }

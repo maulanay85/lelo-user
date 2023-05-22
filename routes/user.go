@@ -13,5 +13,6 @@ func (r routes) addUser(rg *gin.RouterGroup) {
 	user.Use(authModule.JwtTokenCheck)
 	{
 		user.PATCH("/password", module.UserController.ChangePassword)
+		user.GET("/self", module.UserController.GetUserDataById)
 	}
 }

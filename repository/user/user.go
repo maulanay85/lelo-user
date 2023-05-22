@@ -124,6 +124,31 @@ func (u *UserRepositoryModule) GetUserById(ctx context.Context, id int64) (*enti
 	return &user, nil
 }
 
+func (u *UserRepositoryModule) GetUserDataById(ctx context.Context, id int64) (*entity.UserEntity, error) {
+	var user entity.UserEntity
+	err := u.db.QueryRow(ctx,
+		`select
+			id,
+			fullname,
+			email,
+			phone_number,
+			status, 
+			avatar,
+			created_time,
+			updated_time
+		from
+			t_mst_user
+		where id = $1
+		and status = 1
+		`, id,
+	).Scan(&user.Id, &user.Fullname, &user.Email, &user.PhoneNumber, &user.Status, &user.Avatar, &user.CreatedTime, &user.UpdatedTime)
+	if err != nil {
+		log.Errorf("[repository]: GetUserDataById err: %v", err)
+		return &user, err
+	}
+	return &user, nil
+}
+
 func (u *UserRepositoryModule) GetStatusByEmail(ctx context.Context, email string) (int, error) {
 	var status int
 	err := u.db.QueryRow(ctx, `

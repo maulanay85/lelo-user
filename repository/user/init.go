@@ -27,4 +27,5 @@ type UserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.UserEntity, error)
 	GetUserById(ctx context.Context, id int64) (*entity.UserEntity, error)
 	GetStatusByEmail(ctx context.Context, email string) (int, error)
+	GetUserDataById(ctx context.Context, id int64) (*entity.UserEntity, error)
 }

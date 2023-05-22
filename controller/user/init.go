@@ -20,4 +20,5 @@ func NewUserController(
 
 type UserController interface {
 	ChangePassword(c *gin.Context)
+	GetUserDataById(c *gin.Context)
 }

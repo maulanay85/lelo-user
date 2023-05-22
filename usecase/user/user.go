@@ -184,3 +184,13 @@ func (u *UserUsecaseModule) RefreshToken(ctx context.Context, rt string) (*entit
 	}
 	return token, nil
 }
+
+func (u *UserUsecaseModule) GetUserDataById(ctx context.Context, id int64) (*entity.UserEntity, error) {
+	user, err := u.Repo.GetUserDataById(ctx, id)
+	if err != nil {
+		log.Errorf("[usecase] GetUserDataById: %v", err)
+		errorWrap := fmt.Errorf("user is not exist : %w", util.ErrorNotFound)
+		return nil, errorWrap
+	}
+	return user, nil
+}
