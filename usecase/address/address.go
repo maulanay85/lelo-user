@@ -44,3 +44,17 @@ func (a *AddressUsecaseModule) InsertAddressByUser(ctx context.Context, userId i
 	}
 	return id, nil
 }
+
+func (a *AddressUsecaseModule) GetAddressByUserIdAndId(ctx context.Context, userId int64, id int64) (*entity.UserAddressResponseEntity, error) {
+	log.Infof("get address for user: %d. id : %d", userId, id)
+
+	address, err := a.Repo.GetAddressByUserIdAndId(ctx, userId, id)
+	if err != nil {
+		log.Errorf("[usecase] GetAddressByUserIdAndId err: %v", err)
+		errorWrap := fmt.Errorf("data is not exist: %w", util.ErrorNotFound)
+		return &entity.UserAddressResponseEntity{}, errorWrap
+	}
+
+	return address, nil
+
+}

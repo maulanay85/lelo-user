@@ -113,7 +113,7 @@ func (ua *AddressRepositoryModule) GetAddressByUserIdAndId(ctx context.Context, 
 	address := entity.UserAddressResponseEntity{}
 	sql :=
 		`SELECT
-		id,
+		ua.id,
 		ua.user_id,
 		ua.province_id,
 		ua.city_id,
@@ -139,7 +139,7 @@ func (ua *AddressRepositoryModule) GetAddressByUserIdAndId(ctx context.Context, 
 	JOIN t_mst_city c on ua.city_id = c.id
 	JOIN t_mst_district d on ua.district_id = d.id
 	JOIN t_mst_village v on ua.village_id = v.id
-	WHERE ua.user_id = $1 AND ua.id = $2 AND is_deleted = false`
+	WHERE ua.user_id = $1 AND ua.id = $2 AND ua.is_deleted = false`
 
 	err := ua.db.QueryRow(ctx, sql, userId, id).Scan(
 		&address.Id,
@@ -165,7 +165,7 @@ func (ua *AddressRepositoryModule) GetAddressByUserIdAndId(ctx context.Context, 
 		&address.VillageName,
 	)
 	if err != nil {
-		log.Errorf("[repository] GetAddressByUserIdAndId: err %v", err)
+		log.Errorf("[repository] GetAddressByUserIdAndId userId: %d, id: %d, err: %v", userId, id, err)
 		return nil, err
 	}
 	return &address, nil
@@ -180,7 +180,7 @@ func (ua *AddressRepositoryModule) InsertAddressByUserId(ctx context.Context, us
 	RETURNING id`, data.UserId, data.ProvinceId, data.CityId, data.DistrictId, data.VillageId, data.ZipCode, data.Lat, data.Long, data.IsMain, userId, userId, data.Address, false, data.Notes,
 	).Scan(&id)
 	if err != nil {
-		log.Errorf("[repository]: InsertAddressByUserId err: %v", err)
+		log.Errorf("[repository]: InsertAddressByUserId for userId %d error: %v", userId, err)
 		return 0, err
 	}
 	return id, nil

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"strconv"
 
 	"lelo-user/entity"
 	util "lelo-user/util"
@@ -64,4 +65,16 @@ func (uc *UserControllerModule) InsertUserAddress(c *gin.Context) {
 		return
 	}
 	util.SendSuccess(c, id)
+}
+
+func (uc *UserControllerModule) GetAddressByUserIdAndId(c *gin.Context) {
+	addressId := c.Param("addressId")
+	addressIdInt, _ := strconv.ParseInt(addressId, 10, 64)
+	id, _ := c.Get("id")
+	data, err := uc.AddressUsecase.GetAddressByUserIdAndId(c, int64(id.(float64)), addressIdInt)
+	if err != nil {
+		util.SendErrorResponse(c, err)
+		return
+	}
+	util.SendSuccess(c, data)
 }
