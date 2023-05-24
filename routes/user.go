@@ -14,5 +14,7 @@ func (r routes) addUser(rg *gin.RouterGroup) {
 	{
 		user.PATCH("/password", module.UserController.ChangePassword)
 		user.GET("/self", module.UserController.GetUserDataById)
+		user.GET("/address", module.UserController.GetUserAddress)
+		user.POST("/address", module.UserController.InsertUserAddress)
 	}
 }
