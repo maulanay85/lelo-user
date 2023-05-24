@@ -78,3 +78,16 @@ func (uc *UserControllerModule) GetAddressByUserIdAndId(c *gin.Context) {
 	}
 	util.SendSuccess(c, data)
 }
+
+func (uc *UserControllerModule) SetMainAddress(c *gin.Context) {
+	addressId := c.Param("addressId")
+	addressIdInt, _ := strconv.ParseInt(addressId, 10, 64)
+	userId, _ := c.Get("id")
+
+	err := uc.AddressUsecase.SetMainAddressTx(c, int64(userId.(float64)), addressIdInt)
+	if err != nil {
+		util.SendErrorResponse(c, err)
+		return
+	}
+	util.SendSuccess(c, nil)
+}

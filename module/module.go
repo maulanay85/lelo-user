@@ -55,7 +55,7 @@ func InitModule(ctx context.Context, configEntity *entity.Config, credentialEnti
 	// init usecase
 	UserUsecaseModule = userusecase.NewUserusecase(UserRepository, UtilAuthModule, UserRoleRepository, UtilDbModule, RoleRepository)
 	LocationUsecaseModule = locationusecase.NewLocationUsecase(LocationRepository)
-	AddressUsecaseModule = addressusecase.NewAddressUsecaseModule(AddressRepository)
+	AddressUsecaseModule = addressusecase.NewAddressUsecaseModule(AddressRepository, UtilDbModule)
 	// init controller
 	AuthModule = authcontroller.NewAuthController(UserUsecaseModule)
 	UserController = usercontroller.NewUserController(UserUsecaseModule, AddressUsecaseModule)

@@ -17,5 +17,6 @@ func (r routes) addUser(rg *gin.RouterGroup) {
 		user.GET("/address", module.UserController.GetUserAddress)
 		user.POST("/address", module.UserController.InsertUserAddress)
 		user.GET("/address/:addressId", module.UserController.GetAddressByUserIdAndId)
+		user.PATCH("/address/:addressId/main", module.UserController.SetMainAddress)
 	}
 }

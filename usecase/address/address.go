@@ -58,3 +58,37 @@ func (a *AddressUsecaseModule) GetAddressByUserIdAndId(ctx context.Context, user
 	return address, nil
 
 }
+
+func (a *AddressUsecaseModule) SetMainAddressTx(ctx context.Context, userId, addressId int64) error {
+	log.Infof("SetMainAddress for userId: %d to id: %d", userId, addressId)
+
+	tx, err := a.UtilDbModule.BeginTransaction(ctx)
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	mainId, err := a.Repo.GetMainAddressTx(ctx, tx, userId)
+	if err != nil {
+		log.Errorf("[usecase] SetMainAddress err: %v", err)
+		errorWrap := fmt.Errorf("error update main address: %w", util.ErrorInternalServer)
+		return errorWrap
+	}
+
+	err = a.Repo.RemoveMainAddressTx(ctx, tx, userId, mainId)
+	if err != nil {
+		log.Errorf("[usecase] SetMainAddress err: %v", err)
+		errorWrap := fmt.Errorf("error update main address: %w", util.ErrorInternalServer)
+		return errorWrap
+	}
+	err = a.Repo.SetMainAddressTx(ctx, tx, userId, addressId)
+	if err != nil {
+		log.Errorf("[usecase] SetMainAddress err: %v", err)
+		errorWrap := fmt.Errorf("error update main address: %w", util.ErrorInternalServer)
+		return errorWrap
+	}
+	return nil
+}

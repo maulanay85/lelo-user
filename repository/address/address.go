@@ -3,7 +3,9 @@ package address
 import (
 	"context"
 	"lelo-user/entity"
+	"time"
 
+	"github.com/jackc/pgx/v4"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -184,4 +186,43 @@ func (ua *AddressRepositoryModule) InsertAddressByUserId(ctx context.Context, us
 		return 0, err
 	}
 	return id, nil
+}
+
+func (ua *AddressRepositoryModule) GetMainAddressTx(ctx context.Context, tx pgx.Tx, userId int64) (int64, error) {
+	var id int64
+	err := tx.QueryRow(ctx,
+		`
+		SELECT id
+		FROM t_mst_user_address
+		WHERE is_main = true and user_id = $1
+	`, userId).Scan(&id)
+	if err != nil {
+		log.Errorf("[repository]: GetMainAddressTx for userId %d error: %v", userId, err)
+		return 0, err
+	}
+	return id, nil
+}
+
+func (ua *AddressRepositoryModule) RemoveMainAddressTx(ctx context.Context, tx pgx.Tx, userId, addressId int64) error {
+	_, err := tx.Exec(ctx,
+		`
+		UPDATE t_mst_user_address SET is_main = false, updated_time = $1 WHERE id = $2 AND user_id = $3
+	`, time.Now(), addressId, userId)
+	if err != nil {
+		log.Errorf("[repository]: RemoveMainAddressTx for id %d error: %v", addressId, err)
+		return err
+	}
+	return nil
+}
+
+func (ua *AddressRepositoryModule) SetMainAddressTx(ctx context.Context, tx pgx.Tx, userId, addressId int64) error {
+	_, err := tx.Exec(ctx,
+		`
+			UPDATE t_mst_user_address SET is_main = true, updated_time = $1 WHERE id = $2 AND user_id = $3
+		`, time.Now(), addressId, userId)
+	if err != nil {
+		log.Errorf("[repository]: SetMainAddressTx for id %d error: %v", addressId, err)
+		return err
+	}
+	return nil
 }

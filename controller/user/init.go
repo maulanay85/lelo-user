@@ -27,4 +27,5 @@ type UserController interface {
 	GetUserDataById(c *gin.Context)
 	GetUserAddress(c *gin.Context)
 	InsertUserAddress(c *gin.Context)
+	SetMainAddress(c *gin.Context)
 }
